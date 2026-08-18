@@ -72,6 +72,12 @@ This repository includes SQL queries designed to solve operational circulation p
 
 ---
 
+### 📊 SQL Execution & Query Output Preview
+
+![MySQL Query Output](sql_query_output.png)
+
+---
+
 ## 🚀 Getting Started / How to Run
 
 1. **Clone the repository:**
