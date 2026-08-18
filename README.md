@@ -1,4 +1,44 @@
+# E-Commerce Customer Churn Analysis | MySQL
+
+An end-to-end MySQL analytics project focused on understanding customer churn patterns in an e-commerce business. The project covers data cleaning, standardization, feature engineering, and extensive exploratory analysis to uncover key drivers of customer attrition and support data-backed retention strategies.
+
 ---
+
+## 📌 Project Overview
+
+E-commerce businesses face significant revenue risk from customer churn. This project analyzes historical transactional and behavioral data to identify patterns related to:
+
+- Customer tenure and engagement
+- Preferred payment modes and devices
+- Satisfaction scores and complaint behavior
+- Purchase frequency, cashback, and order value trends
+- Geographic and demographic factors influencing churn
+
+The goal is to generate actionable insights that help the business design targeted retention initiatives.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Database**: MySQL 8.0+
+- **Language**: SQL (DDL + DML + Analytical Queries)
+- **Key Techniques**:
+  - Data cleaning & imputation (mean / mode)
+  - Outlier handling
+  - Value standardization
+  - Feature engineering (new derived columns)
+  - Multi-condition filtering, aggregations, and grouping
+  - Conditional logic & categorization
+  - Joins with a secondary returns table
+
+---
+
+## 📂 Project Structure---
+
+E-Commerce-Customer-Churn-Retention-Analysis-SQL/ ├── ecommerce_churn_analysis.sql    
+# Complete SQL script (cleaning + analysis) ├── sql_query_output.png             
+# Sample query output screenshot └── README.md
+
 
 ## 🧹 Data Cleaning & Preparation
 
@@ -59,12 +99,18 @@ The project answers the following business questions:
 
 ## 🚀 How to Run
 
-1. Create a database (e.g., `ecomm`).
-2. Import the original dataset into a table (commonly named `customer_churn` or similar).
+1. Create a database (example: `ecomm`).
+2. Import the original dataset into a table.
 3. Execute the SQL script step-by-step or as a complete workflow.
 4. Review the results of each analytical query.
 
 ```sql
--- Example: Create database
 CREATE DATABASE IF NOT EXISTS ecomm;
 USE ecomm;
+
+
+
+
+
+
+
