@@ -1,116 +1,74 @@
-# E-Commerce Customer Churn Analysis | MySQL
+# 🛒 E-Commerce Customer Churn & Retention Analytics (MySQL)
 
-An end-to-end MySQL analytics project focused on understanding customer churn patterns in an e-commerce business. The project covers data cleaning, standardization, feature engineering, and extensive exploratory analysis to uncover key drivers of customer attrition and support data-backed retention strategies.
+An end-to-end SQL data analytics project focused on **E-Commerce Customer Churn Analysis, Data Cleaning (ETL), Behavioral Segmentation, and Return Correlation** using MySQL. 
+
+This project covers database schema definition, handling missing values via mean/mode imputation, outlier removal, categorical standardization, column refactoring, and complex analytical SQL queries.
 
 ---
 
 ## 📌 Project Overview
 
-E-commerce businesses face significant revenue risk from customer churn. This project analyzes historical transactional and behavioral data to identify patterns related to:
+Customer churn directly affects revenue and retention strategies. This project analyzes a customer dataset to diagnose churn patterns, evaluate the relationship between complaints and churn, track delivery distance impacts, and cross-reference churned profiles with product return histories.
 
-- Customer tenure and engagement
-- Preferred payment modes and devices
-- Satisfaction scores and complaint behavior
-- Purchase frequency, cashback, and order value trends
-- Geographic and demographic factors influencing churn
-
-The goal is to generate actionable insights that help the business design targeted retention initiatives.
+### Key Objectives:
+1. **Data Cleaning & Preprocessing (ETL)**: Impute missing numerical/categorical data using statistical mean and mode, eliminate spatial outliers (`WarehouseToHome > 100`), and standardize categorical values (`COD` $\rightarrow$ `Cash on Delivery`, `CC` $\rightarrow$ `Credit Card`, `Phone` $\rightarrow$ `Mobile Phone`).
+2. **Schema Refactoring**: Enhance readability by adding descriptive status columns (`ChurnStatus`, `ComplaintReceived`) via `CASE` statements and dropping redundant raw bit flags.
+3. **Exploratory & Diagnostic SQL Analytics**: Compute churn rates, average cashback, coupon distributions, preferred payment modes, and satisfaction score breakdowns across customer demographics.
+4. **Relational Multi-Table Joining**: Link the primary `customer_churn` dataset with a secondary `customer_returns` table using `INNER JOIN` to identify return triggers among churned complainants.
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Tech Stack & SQL Concepts
 
-- **Database**: MySQL 8.0+
-- **Language**: SQL (DDL + DML + Analytical Queries)
-- **Key Techniques**:
-  - Data cleaning & imputation (mean / mode)
-  - Outlier handling
-  - Value standardization
-  - Feature engineering (new derived columns)
-  - Multi-condition filtering, aggregations, and grouping
-  - Conditional logic & categorization
-  - Joins with a secondary returns table
-
----
-
-## 📂 Project Structure---
-
-E-Commerce-Customer-Churn-Retention-Analysis-SQL/ ├── ecommerce_churn_analysis.sql    
-# Complete SQL script (cleaning + analysis) ├── sql_query_output.png             
-# Sample query output screenshot └── README.md
-
-
-## 🧹 Data Cleaning & Preparation
-
-### Missing Value Imputation
-- **Mean imputation** (rounded to nearest integer where required):  
-  `WarehouseToHome`, `HourSpendOnApp`, `OrderAmountHikeFromlastYear`, `DaySinceLastOrder`
-- **Mode imputation**:  
-  `Tenure`, `CouponUsed`, `OrderCount`
-
-### Outlier Handling
-- Removed rows where `WarehouseToHome > 100`
-
-### Value Standardization
-- `PreferredLoginDevice`: Replaced “Phone” → “Mobile Phone”
-- `PreferedOrderCat`: Replaced “Mobile” → “Mobile Phone”
-- `PreferredPaymentMode`:  
-  - “COD” → “Cash on Delivery”  
-  - “CC” → “Credit Card”
-
-### Column Transformations
-- Renamed:
-  - `PreferedOrderCat` → `PreferredOrderCat`
-  - `HourSpendOnApp` → `HoursSpentOnApp`
-- Created new columns:
-  - `ComplaintReceived` → “Yes” if `Complain = 1`, else “No”
-  - `ChurnStatus` → “Churned” if `Churn = 1`, else “Active”
-- Dropped original columns: `Churn`, `Complain`
+* **Database Engine**: MySQL 8.0+ / Relational DBMS
+* **Data Definition Language (DDL)**: `CREATE TABLE`, `ALTER TABLE`, `ADD/DROP/MODIFY/RENAME COLUMN`, `PRIMARY KEY`, `FOREIGN KEY`.
+* **Data Manipulation Language (DML)**: `INSERT INTO`, `UPDATE ... SET`, `DELETE FROM`, `SET @variable` (Session Variables).
+* **Data Cleaning & Imputation**:
+  * Statistical Mean Imputation: `WarehouseToHome`, `HourSpendOnApp`, `OrderAmountHikeFromlastYear`, `DaySinceLastOrder`.
+  * Statistical Mode Imputation: `Tenure`, `CouponUsed`, `OrderCount`.
+* **Analytical Queries & Logic**:
+  * **Relational Joins**: `INNER JOIN` connecting `customer_returns` and `customer_churn`.
+  * **Conditional Logic**: `CASE WHEN` for distance binning (`Very Close`, `Close`, `Moderate`, `Far`) and boolean-to-string mapping.
+  * **Aggregations & Grouping**: `COUNT()`, `SUM()`, `AVG()`, `MAX()`, `GROUP BY`, `HAVING`.
+  * **Subqueries**: Filtering customers above average order thresholds and identifying usage patterns.
 
 ---
 
-## 📊 Key Analytical Insights Covered
+## 🗂️ Database Schema & Data Modeling
 
-The project answers the following business questions:
+### 1. `customer_churn` (Master Customer Table)
+* `CustomerID` (PK)
+* `Tenure`, `PreferredLoginDevice`, `CityTier`, `WarehouseToHome`, `PreferredPaymentMode`, `Gender`
+* `HoursSpendOnApp`, `NumberOfDeviceRegistered`, `PreferredOrderCat`, `SatisfactionScore`, `MaritalStatus`
+* `NumberOfAddress`, `OrderAmountHikeFromlastYear`, `CouponUsed`, `OrderCount`, `DaySinceLastOrder`, `CashbackAmount`
+* `ComplaintReceived` (`Yes`/`No`), `ChurnStatus` (`Churned`/`Active`)
 
-1. Count of Churned vs Active customers
-2. Average tenure and total cashback of churned customers
-3. Percentage of churned customers who raised complaints
-4. City tier with highest churn among Laptop & Accessory buyers
-5. Most preferred payment mode among active customers
-6. Total order amount hike for single customers preferring mobile phones
-7. Average devices registered by UPI users
-8. City tier with the highest overall customer base
-9. Gender that used the highest number of coupons
-10. Customer count and max hours spent on app by preferred order category
-11. Total order count for credit-card users with maximum satisfaction score
-12. Average satisfaction score of customers who complained
-13. Preferred order category of customers who used more than 5 coupons
-14. Top 3 preferred order categories by average cashback
-15. Preferred payment modes of customers with ~10 months tenure and >500 orders
-16. Churn status breakdown by warehouse-to-home distance categories  
-    (Very Close ≤5km | Close ≤10km | Moderate ≤15km | Far >15km)
-17. Order details of married customers in City Tier-1 whose order count exceeds the overall average
-
-### Additional Analysis
-- Created `customer_returns` table and joined it with churned + complained customers to analyze return behavior.
+### 2. `customer_returns` (Transactional Returns Table)
+* `ReturnID` (PK)
+* `CustomerID` (FK referencing `customer_churn`)
+* `ReturnDate`, `Reason`
 
 ---
 
-## 🚀 How to Run
+## 🔍 Key Business Questions & SQL Solutions
 
-1. Create a database (example: `ecomm`).
-2. Import the original dataset into a table.
-3. Execute the SQL script step-by-step or as a complete workflow.
-4. Review the results of each analytical query.
+* **Complaint vs. Churn Ratio**: Calculated the percentage of churned users who submitted formal complaints.
+* **Distance vs. Churn Categorization**: Segmented warehouse-to-home distances into dynamic bins (`<=5 km`, `5–10 km`, `10–15 km`, `>15 km`) to track churn distribution across delivery proximity.
+* **Demographic & Category Trends**: Identified top churned categories by City Tier (e.g., *Laptop & Accessory* in Tier 1 cities) and evaluated coupon consumption across gender segments.
+* **Return History for High-Risk Customers**: Joined returned orders with churned profiles who lodged complaints to audit root-cause return behaviors.
+* **High-Value Customer Profiling**: Filtered married City Tier 1 customers placing orders above the overall platform average.
 
-```sql
-CREATE DATABASE IF NOT EXISTS ecomm;
-USE ecomm;
+---
 
+## 📊 SQL Execution Preview
 
+![MySQL Query Output](sql_query_output.png)
 
+---
 
+## 🚀 How to Run the Project
 
-
-
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/ashilbrayan/E-Commerce-Customer-Churn-Retention-Analysis-SQL-.git](https://github.com/ashilbrayan/E-Commerce-Customer-Churn-Retention-Analysis-SQL-.git)
+   cd E-Commerce-Customer-Churn-Retention-Analysis-SQL-
